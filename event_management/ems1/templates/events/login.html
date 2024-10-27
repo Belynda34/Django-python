@@ -1,0 +1,50 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Event management system</title>
+    {% tailwind_css %}
+  </head>
+  <body class="bg-gray-100">
+    <div class="flex flex-col justify-center items-center">
+      <h1 class="text-center py-10 text-4xl font-bold text-green-700">
+        Login
+      </h1>
+      <form
+        method="POST"
+        class="w-full max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg"
+      >
+        {% csrf_token %}
+
+        <div class="mb-6">
+          <label class="block text-lg font-medium mb-2">Username</label>
+          {{ form.username }}
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-lg font-medium mb-2">Password</label>
+          {{ form.password }}
+        </div>
+        <div class="mb-4 text-lg">
+          Don't have an account ?
+          <a href="{% url 'register' %}" class="underline text-green-700 font-semibold">Register</a>
+        </div>
+
+        {% if error %}
+            <div class="text-red-700 text-center font-bold rounded-lg mb-4">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <button
+          type="submit"
+          class="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-500 transition duration-150"
+        >
+            login
+        </button>
+      </form>
+    </div>
+  </body>
+</html>

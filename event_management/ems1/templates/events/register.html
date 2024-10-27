@@ -1,0 +1,65 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register</title>
+    {% tailwind_css %}
+  </head>
+  <body class="bg-gray-100">
+    <div class="flex flex-col justify-center items-center">
+
+      <div class="container space-y-10 mx-auto px-4 py-20">
+        <h1 class="text-green-500 text-5xl font-bold text-center mb-4">Welcome to Our Event Management system</h1>
+        <p class="text-gray-500 font-semibold text-xl text-center mb-6">
+            Discover our range of services and events designed to bring people together. 
+            Whether you're looking to connect with local vendors or participate in community activities, 
+            we've got something for everyone.
+        </p> 
+      </div>
+      
+      <form
+        method="POST"
+        class="w-full max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg"
+      >
+      <h1 class="text-center py-10 text-4xl font-bold text-green-700">
+        Register with us 
+      </h1>
+        {% csrf_token %}
+
+        <div class="mb-6">
+          <label class="block text-lg font-medium mb-2">Username</label>
+          {{ form.username }}
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-lg font-medium mb-2">Email</label>
+          {{ form.email }}
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-lg font-medium mb-2">Password</label>
+          {{ form.password }}
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-lg font-medium mb-2">Role</label>
+          {{ form.user_role }}
+        </div>
+
+        <div class="mb-6 text-lg">
+          Already have an account ?
+          <a href="{% url 'login' %}" class="underline text-green-700 font-semibold">Login</a>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-500 transition duration-150"
+        >
+          Register
+        </button>
+      </form>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,62 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    {% tailwind_css %}
+  </head>
+  <body>
+    <nav class="bg-green-700 text-white p-4 shadow-md">
+      <div class="container mx-auto flex justify-between items-center">
+        <div class="flex space-x-4">
+          <a href="/" class="hover:text-green-300 transition duration-150"
+            >Home</a
+          >
+          <a href="/events" class="hover:text-green-300 transition duration-150"
+            >Events</a
+          >
+          <a href="/allvendors" class="hover:text-green-300 transition duration-150"
+            >Vendors</a
+          >
+          <a href="" class="hover:text-green-300 transition duration-150"
+            >Contact</a
+          >
+        </div>
+        <div class="flex space-x-4">
+          <form action="{% url 'create' %}" method="get">
+            <button
+              class="bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded transition duration-150"
+            >
+              Create Event
+            </button>
+          </form>
+          <form action="{% url 'vendor_create' %}" method="get">
+            <button
+              class="bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded transition duration-150"
+            >
+              Add Vendor
+            </button>
+          </form>
+          <form action="{% url 'logout' %}">
+            <button
+              class="bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-3 rounded transition duration-150"
+            >
+              Logout
+            </button>
+          </form>
+        </div>
+      </div>
+    </nav>
+    <main>{% block content %}{% endblock %}</main>
+    <footer class="bg-green-800 text-white p-4 mt-8">
+      <div class="text-center">
+        <p>&copy; 2025 Event Management System. All rights reserved.</p>
+        <p class="text-sm">
+          Your one-stop solution for managing events seamlessly.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

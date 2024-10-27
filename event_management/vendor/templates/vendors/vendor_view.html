@@ -1,0 +1,68 @@
+{% extends 'vendors/base.html' %}
+{% block content %}
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management System</title>
+    {% tailwind_css %}
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-bold text-green-800 mb-6">Our Vendors</h1>
+        <table class="min-w-full bg-white border border-green-300 rounded-lg shadow-lg overflow-hidden">
+            <thead>
+                <tr class="bg-green-700 text-white">
+                    <th class="py-3 px-6 text-left text-sm uppercase font-semibold">Event Name</th>
+                    <th class="py-3 px-6 text-left text-sm uppercase font-semibold">Vendor's Name</th>
+                    <th class="py-3 px-6 text-left text-sm uppercase font-semibold">Services Offered</th>
+                    <th class="py-3 px-6 text-left text-sm uppercase font-semibold">Contact Information</th>
+                    <th class="py-3 px-6 text-left text-sm uppercase font-semibold">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if vendors %}
+                {% for vendor in vendors %}
+                    <tr class="hover:bg-green-100 transition duration-150">
+                        <td class="py-4 px-6 border-b border-green-200">{{ vendor.event }}</td>
+                        <td class="py-4 px-6 border-b border-green-200">{{ vendor.name }}</td>
+                        <td class="py-4 px-6 border-b border-green-200">{{ vendor.services_offered }}</td>
+                        <td class="py-4 px-6 border-b border-green-200">{{ vendor.phone_number }}</td>
+                        <td class="py-4 px-6 border-b border-green-200 text-center">
+                            <a href="{% url 'vendor_update' vendor.id %}" class="bg-green-500 text-white py-2 px-4 rounded-lg text-sm hover:bg-green-600 transition duration-150 mr-2 inline-block">Update</a>
+                            <a  href="{% url 'vendor_delete' vendor.id%}" class="bg-green-700 text-white py-2 px-4 rounded-lg text-sm hover:bg-green-800 transition duration-150 inline-block">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="py-4 text-center text-green-700">No events available.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+         <!-- <div class="pagination mt-6">
+            <span class="step-links">
+                {% if vendors.has_previous %}
+                    <a href="?page=1" class="text-green-700 hover:text-green-500">&laquo; first</a>
+                    <a href="?page={{ vendors.previous_page_number }}" class="text-green-700 hover:text-green-500">previous</a>
+                {% endif %}
+
+                <span class="current text-green-800">
+                    Page {{ vendors.number }} of {{ vendors.paginator.num_pages }}.
+                </span>
+
+                {% if vendors.has_next %}
+                    <a href="?page={{ vendors.next_page_number }}" class="text-green-700 hover:text-green-500">next</a>
+                    <a href="?page={{ vendors.paginator.num_pages }}" class="text-green-700 hover:text-green-500">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div> -->
+    </div>
+</body>
+</html>
+{% endblock %}
+
+

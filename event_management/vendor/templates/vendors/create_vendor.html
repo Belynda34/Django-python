@@ -1,0 +1,43 @@
+{% extends 'vendors/base.html' %}
+{% block content %}
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendors</title>
+    {% tailwind_css %}
+</head>
+<body class="bg-gray-100">
+    <h1 class="text-center py-10 text-4xl font-bold text-green-700">Add Vendor for an Event</h1>
+    <form method="POST" class="w-full max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
+        {% csrf_token %}
+        
+        <div class="mb-6">
+            <label class="block text-lg font-medium mb-2">Vendor's names</label>
+            {{ form.name }}
+        </div>
+
+        <div class="mb-6">
+            <label  class="block text-lg font-medium mb-2">Services Offered</label>
+            {{ form.services_offered }}
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-lg font-medium mb-2">Contact Information</label>
+            {{ form.phone_number }}
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-lg font-medium mb-2">Event name</label>
+            {{ form.event }}
+        </div>
+
+        <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-500 transition duration-150">
+            Add Vendor
+        </button>
+    </form>
+</body>
+</html>
+{% endblock %}

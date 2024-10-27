@@ -1,0 +1,27 @@
+{% extends 'events/layout.html' %}
+
+{% block content %}
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold text-red-800 mb-6">Delete Event</h1>
+<!--     
+    {% if messages %}
+    <div class="mb-4">
+        {% for message in messages %}
+            <div class="bg-green-200 text-green-800 p-2 rounded mb-2">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %} -->
+
+    <p class="text-gray-700">Are you sure you want to delete Vendor: <strong>{{ vendor.name }}</strong>?</p>
+
+    <form method="POST" class="mt-4">
+        {% csrf_token %}
+        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+            Yes, Delete
+        </button>
+        <a href="{% url 'vendor_view' %}" class="ml-4 text-blue-500">Cancel</a>
+    </form>
+</div>
+{% endblock %}

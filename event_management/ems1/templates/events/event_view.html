@@ -1,0 +1,60 @@
+{% extends 'events/layout.html' %}
+{% block content %}
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management System</title>
+    {% tailwind_css %}
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-bold text-green-800 mb-6">Event Management System</h1>
+        <table class="w-full bg-white border border-green-300 rounded-lg shadow-lg overflow-hidden">
+            <thead>
+                <tr class="bg-green-700 text-white">
+                    <th class="py-3 px-6 text-left text-sm uppercase font-semibold">Event Name</th>
+                    <!-- <th class="py-3 px-6 text-left text-sm uppercase font-semibold">Description</th> -->
+                    <th class="py-3 px-6 text-left text-sm uppercase font-semibold">Location</th>
+                    <th class="py-3 px-6 text-left text-sm uppercase font-semibold">Start Date</th>
+                    <th class="py-3 px-6 text-left text-sm uppercase font-semibold">End Date</th>
+                    <th class="py-3 px-6 text-left text-sm uppercase font-semibold">Capacity</th>
+                    <th class="py-3 px-6 text-left text-sm uppercase font-semibold">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if events %}
+                {% for event in events %}
+                    <tr class="hover:bg-green-100 transition duration-150">
+                        <td class="py-4 px-6 border-b border-green-50">{{ event.name }}</td>
+                        <!-- <td class="py-4 px-6 border-b border-green-50">{{ event.description }}</td> -->
+                        <td class="py-4 px-6 border-b border-green-50">{{ event.location }}</td>
+                        <td class="py-4 px-6 border-b border-green-50">{{ event.startDate }}</td>
+                        <td class="py-4 px-6 border-b border-green-50">{{ event.endDate }}</td>
+                        <td class="py-4 px-6 border-b border-green-50">{{ event.capacity }}</td>
+                        <td class="py-4 px-6 border-b border-green-50 flex ">
+                            {% if user_role == "event manager" %}
+                                <a href="{% url 'update' event.id %}" class="bg-green-500 text-white py-2 px-3 rounded-lg text-sm hover:bg-green-600 transition duration-150 mr-2 inline-block">Update</a>
+                                <a  href="{% url 'delete' event.id%}" class="bg-green-700 text-white py-2 px-3 rounded-lg text-sm hover:bg-green-800 transition duration-150 inline-block">Delete</a>
+                            {% endif %}
+                            <a href="{% url 'event_detail' event.id %}" class="text-green-500 py-2 px-3 hover:underline text-sm">More</a> <!-- Updated More link -->
+                        </td>
+                    </tr>
+                {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="py-4 text-center text-green-700">No events available.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+{% endblock %}
+
+
+<!-- href="{% url 'update_event' event.id %}" -->
+<!-- href="{% url 'delete_event' event.id %}" -->

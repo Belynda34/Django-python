@@ -1,0 +1,42 @@
+{% extends 'events/layout.html' %}
+{% block content %}
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Event</title>
+    {% tailwind_css %}
+</head>
+<body class="bg-gray-100">
+    <h1 class="text-center py-10 text-4xl font-bold text-green-700">Attendee Registration</h1>
+    <form method="POST" class="w-full max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
+        {% csrf_token %}
+        
+        <div class="mb-6">
+            <label for="id_name" class="block text-lg font-medium mb-2">Attendee's Name</label>
+            {{ form.name }}
+        </div>
+
+        <div class="mb-6">
+            <label for="id_location" class="block text-lg font-medium mb-2">Attendee's Email</label>
+            {{ form.email }}
+        </div>
+
+        <div class="mb-6">
+            <label for="id_capacity" class="block text-lg font-medium mb-2">Phone number</label>
+            {{ form.phone_number }}
+        </div>
+        <div class="mb-6">
+            <label for="id_capacity" class="block text-lg font-medium mb-2">Event</label>
+            {{ form.event }}
+        </div>
+
+        <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-500 transition duration-150">
+            Register
+        </button>
+    </form>
+</body>
+</html>
+{% endblock %}
