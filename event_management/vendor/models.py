@@ -10,4 +10,4 @@ class Vendor(models.Model):
     event=models.ForeignKey(Event,on_delete=models.CASCADE,related_name='vendors')
 
     def __str__(self):
-        return f"Vendor: {self.name} | services_offered: {self.services_offered} | phone_number: {self.phone_numer} | event: {self.event}"
+        return f"Vendor: {self.name} | services_offered: {self.services_offered} | phone_number: {self.phone_number} | event: {self.event}"

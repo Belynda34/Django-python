@@ -12,6 +12,7 @@ class Event(models.Model):
     startDate=models.DateField()
     endDate=models.DateField()
     capacity=models.IntegerField()
+    created_by =models.ForeignKey(User, on_delete=models.CASCADE,null=False)
 
 
     def __str__(self):

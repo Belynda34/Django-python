@@ -51,7 +51,15 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
-NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"
+# Set the session expiration time in seconds (e.g., 1800 seconds = 30 minutes)
+SESSION_COOKIE_AGE = 60  # 1 minutes
+
+# Set session to expire when the user closes the browser
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# Optional: Use persistent sessions by setting this to False
+SESSION_SAVE_EVERY_REQUEST = False  # Extends session on every request
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -144,3 +152,6 @@ STATICFILES_DIRS =(
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+LOGIN_URL = '/accounts/login/'

@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+# from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 # from django.views import View
 from .models import Event,UserAccount,Attendee
@@ -58,20 +58,13 @@ def events_view(request):
     user_role = None
     if request.user.is_authenticated:
         user_role=request.user.useraccount.user_role
-    events = Event.objects.all()
+    if user_role == "event manager":
+        events = Event.objects.filter(created_by=request.user)
+    elif user_role == "attendee":
+        events = Event.objects.all() 
     return render(request,'events/event_view.html',{'events':events,'user_role':user_role})
 
-def create_event_view(request):
-    if request.user.is_authenticated:
-            user_role=request.user.useraccount.user_role
-    if request.method == "POST":
-        form = EventForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('event_list')
-    else:
-        form=EventForm()
-    return render(request,'events/create_event.html',{'form':form,'user_role':user_role})
+
 
 # REGISTER ATTENDEE FOR AN EVENT 
 def register_attendee(request,event_id):
@@ -98,7 +91,25 @@ def show_attendees(request,id):
     })
 
   
-# CREATE EVENT 
+# CREATE EVENT
+ 
+@login_required
+def create_event_view(request):
+    user_role = None
+    if request.user.is_authenticated:
+        user_role = request.user.useraccount.user_role
+    if request.method == "POST":
+        form = EventForm(request.POST)
+        if form.is_valid():
+            # form.save()
+            event = form.save(commit=False)
+            event.created_by = request.user
+            event.save()
+            return redirect('event_list')
+    else:
+        form=EventForm()
+    return render(request,'events/create_event.html',{'form':form,'user_role':user_role})
+
 
 
 # UPDATING AN EVENT 
