@@ -1,12 +1,14 @@
 from django.contrib import messages
+from django.db.models import Count
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 # from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 # from django.views import View
-from .models import Event,UserAccount,Attendee
+from .models import Event,UserAccount,Attendee,Analytics
 from .form import EventForm,RegisterForm,LoginForm,AttendeeForm
+import json
 
 # Create your views here.
 
@@ -20,9 +22,11 @@ def register_view(request):
             email = form.cleaned_data.get("email")
             password = form.cleaned_data.get("password")
             user_role = form.cleaned_data.get("user_role")
-
             user=User.objects.create_user(username=username,email=email,password=password)
             UserAccount.objects.create(user=user,user_role=user_role)
+            Analytics.objects.create(action="user_registered",user=user)
+            registrations = Analytics.objects.filter(action="user_registered").count()
+            messages.success(request, f"Welcome {username}! Total registrations: {registrations}")
             login(request,user)
             return redirect('event_list')
     else:
@@ -61,8 +65,9 @@ def events_view(request):
     if user_role == "event manager":
         events = Event.objects.filter(created_by=request.user)
     elif user_role == "attendee":
-        events = Event.objects.all() 
-    return render(request,'events/event_view.html',{'events':events,'user_role':user_role})
+        events = Event.objects.all()
+    registrations = Analytics.objects.filter(action="user_registered").count() 
+    return render(request,'events/event_view.html',{'events':events,'user_role':user_role,'registrations':registrations})
 
 
 
@@ -105,6 +110,7 @@ def create_event_view(request):
             event = form.save(commit=False)
             event.created_by = request.user
             event.save()
+            Analytics.objects.create(action="event_created",user=request.user,event=event)
             return redirect('event_list')
     else:
         form=EventForm()
@@ -146,6 +152,25 @@ def event_detailed_view(request,id):
 # CONTACT VIEW
 def contact_view(request):
     return render(request,'events/contact.html')
+
+
+
+# Analytics view 
+
+@login_required
+def analytics_view(request):
+    event_counts = Event.objects.annotate(attendee_count=Count('attendees')).values('name', 'attendee_count')
+    user_registrations = Analytics.objects.filter(action="user_registered").count()
+    event_creations = Analytics.objects.filter(action="event_created").count()
+
+    serialized_event_counts = json.dumps(list(event_counts))
+
+    print(event_counts, user_registrations, event_creations)
+    return render(request, 'events/analytics.html', {
+        'event_counts': serialized_event_counts,
+        'user_registrations': user_registrations,
+        'event_creations': event_creations
+    })
 
 
 

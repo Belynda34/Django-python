@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+
+</head>
+<body>
+    
+    <h1>Event Analytics</h1>
+
+    <canvas id="eventChart" width="300" height="150"></canvas>    
+    <script>
+       
+        const eventCounts =JSON.parse ('{{ event_counts|safe }}');
+        
+        const labels = eventCounts.map(item => item.name);
+        const attendeeData = eventCounts.map(item => item.attendee_count);
+        const eventCreationCount = {{ event_creations }};
+        const ctx = document.getElementById('eventChart').getContext('2d');
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Attendees per Event',
+                        data: attendeeData,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Events Created',
+                        data: Array(labels.length).fill(eventCreationCount), 
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -19,7 +19,6 @@ class Event(models.Model):
      return f"{self.name}"
     
 
-
 class UserAccount(models.Model):
    USER_ROLE_CHOICES = [
       ('event manager','Event Manager'),
@@ -41,3 +40,13 @@ class Attendee(models.Model):
 
    def __str__(self):
       return f"{self.name}-{self.email}-{self.phone_number}-{self.event.name}"
+   
+
+class Analytics(models.Model):
+   action=models.CharField(max_length=255)
+   user=models.ForeignKey(User,on_delete=models.SET_NULL,null=True,blank=True)
+   event=models.ForeignKey(Event,on_delete=models.SET_NULL,null=True,blank=True)
+   timestamp=models.DateTimeField(auto_now_add=True)
+
+   def __str__(self):
+      return f"{self.action} by{self.user}at{self.timestamp}"

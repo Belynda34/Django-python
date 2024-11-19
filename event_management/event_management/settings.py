@@ -71,7 +71,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     "django_browser_reload.middleware.BrowserReloadMiddleware",
+    'django.middleware.csrf.CsrfViewMiddleware',
 ]
+
+CSRF_COOKIE_SECURE = False  # Set to True if using HTTPS
+SESSION_COOKIE_SECURE = False  # Set to True if using HTTPS
+CSRF_USE_SESSIONS = False
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
+
 
 ROOT_URLCONF = 'event_management.urls'
 
