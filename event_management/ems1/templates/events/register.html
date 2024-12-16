@@ -24,10 +24,11 @@
         class="w-full max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg"
         action=""
       >
+      {% csrf_token %}
       <h1 class="text-center py-10 text-4xl font-bold text-green-700">
         Register with us 
       </h1>
-        {% csrf_token %}
+        
 
         <div class="mb-6">
           <label class="block text-lg font-medium mb-2">Username</label>

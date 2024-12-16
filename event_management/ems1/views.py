@@ -1,6 +1,8 @@
+import os
 from django.contrib import messages
 from django.db.models import Count
-from django.shortcuts import render,redirect
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render,redirect
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 # from django.contrib.auth.mixins import LoginRequiredMixin
@@ -9,6 +11,10 @@ from django.contrib.auth.models import User
 from .models import Event,UserAccount,Attendee,Analytics
 from .form import EventForm,RegisterForm,LoginForm,AttendeeForm
 import json
+from django.core.paginator import Paginator
+
+from django.views.decorators.csrf import csrf_exempt
+# from rest_framework import serializers
 
 # Create your views here.
 
@@ -56,18 +62,61 @@ def logout_view(request):
     logout(request)
     return redirect('login')
     
-# Displaying all available events
-@login_required
+
+
+
+
+def event_view_po(request):
+    # user_role = None
+    events = Event.objects.all()  # Default to an empty queryset
+
+    # if request.user.is_authenticated:
+    #     user_role = request.user.useraccount.user_role
+    #     if user_role == "event manager":
+    #         events = Event.objects.filter(created_by=request.user)
+    #     elif user_role == "attendee":
+    #         events = Event.objects.all()
+
+    registrations = Analytics.objects.filter(action="user_registered").count()
+
+    # Prepare data for all events
+    events_data = [
+        {
+            'id': event.id,
+            'name': event.name,
+            'description': event.description,
+            'location': event.location,
+            'created_by': event.created_by,  # Assuming 'created_by' is a User object
+        }
+        for event in events
+    ]
+
+    return JsonResponse({
+        'events': events_data,
+        # 'user_role': user_role,
+        'registrations': registrations
+    })
+
+
 def events_view(request):
-    user_role = None
-    if request.user.is_authenticated:
-        user_role=request.user.useraccount.user_role
-    if user_role == "event manager":
-        events = Event.objects.filter(created_by=request.user)
-    elif user_role == "attendee":
-        events = Event.objects.all()
-    registrations = Analytics.objects.filter(action="user_registered").count() 
-    return render(request,'events/event_view.html',{'events':events,'user_role':user_role,'registrations':registrations})
+    events = Event.objects.all().order_by('id')
+    paginator = Paginator(events, 10)  # Adjust page size as needed
+
+    try:
+        page_number = int(request.GET.get('page', 1))
+    except ValueError:
+        page_number = 1
+
+    event_page = paginator.get_page(page_number)
+    registrations = Analytics.objects.filter(action="user_registered").count()
+
+    return render(request, 'events/event_view.html', {'page_obj': event_page, 'registrations': registrations})
+
+
+
+
+
+
 
 
 
@@ -86,19 +135,124 @@ def register_attendee(request,event_id):
     return render(request,'events/attendee_register.html',{'form':form,'event':event})
 
 # SHOW ATTENDEES FOR AN EVENT 
-def show_attendees(request,id):
-    event = Event.objects.get(id=id)
-    attendees = Attendee.objects.filter(event=event)
+# def show_attendees(request,id):
+#     event = Event.objects.get(id=id)
+#     attendees = Attendee.objects.filter(event=event)
 
-    return render(request, 'events/show_attendees.html', {
-        'event': event,
-        'attendees': attendees
+#     return render(request, 'events/show_attendees.html', {
+#         'event': event,
+#         'attendees': attendees
+#     })
+
+
+
+
+# def show_attendees(request, event_id):
+#     # Use get_object_or_404 to safely handle invalid IDs
+#     event = Event.objects.get(id=event_id)
+    
+#     # Filter attendees by the event
+#     attendees = Attendee.objects.filter(event=event)
+
+#     # Prepare the list of attendees to return as JSON
+#     attendees_data = [
+#         {
+#             'event_id': attendee.event,
+#             'name': attendee.name,
+#             'email': attendee.email,
+#             # Add more fields as necessary
+#         }
+#         for attendee in attendees
+#     ]
+
+#     # Return the response as a JSON object
+#     return JsonResponse({
+#         # 'event': {
+#         #     'event_id': event.id,
+#         # },
+#         'attendees': attendees_data
+#     })
+
+
+# def show_attendees(request, event_id):
+#     # Assuming you have an event with the given ID
+#     event = Event.objects.get(id=event_id)
+    
+#     # Serialize the Event object into a JSON-compatible format
+#     event_data = serializers.serialize('json', [event])
+
+#     # You may want to serialize attendees as well
+#     attendees = Attendee.objects.filter(event=event)
+#     attendees_data = list(attendees.values())  # This will return a list of dictionaries
+
+#     return JsonResponse({
+#         'event': event_data,
+#         'attendees': attendees_data
+#     })
+
+def all_attendees(request):
+    # Fetch all attendees
+    attendees = Attendee.objects.all()
+
+    # Convert the queryset to a list of dictionaries
+    attendees_data = list(attendees.values())  # .values() converts the queryset to dictionaries
+
+    # Return the data as a JSON response
+    return JsonResponse({
+        'attendees': attendees_data
     })
+
+
+
+# SHOWING DETAILS FOR AN EVENT 
+def event_detailed_view(request,id):
+    # user_role:None
+    # if request.user.is_authenticated:
+      # user_role=request.user.useraccount.user_role
+    event = Event.objects.get(id=id)
+    event_data = [
+        {
+            'id':event.id,
+            'name':event.name,
+            'description':event.description,
+            'location':event.location
+        }
+    ]
+    # return render(request,'events/event_detailed.html',{'event':event})
+    return JsonResponse({
+        'event':event_data
+    })
+
+
+# CONTACT VIEW
+def contact_view(request):
+    return render(request,'events/contact.html')
+
+
+# def show_attendees(request, event_id):
+#     # Retrieve the Event object by event_id
+#     try:
+#         event = Event.objects.get(id=event_id)
+#     except Event.DoesNotExist:
+#         return JsonResponse({'error': 'Event not found'}, status=404)
+
+#     # Use the correct field name, event_id
+#     attendees = Attendee.objects.filter(event_id=event.id)
+    
+#     # Serialize event and attendees
+#     event_serializer = Eventserializer(event)
+#     attendees_serializer = AttendeeSerializer(attendees, many=True) # type: ignore
+    
+#     # Return a JSON response
+#     return JsonResponse({
+#         'event': event_serializer.data,
+#         'attendees': attendees_serializer.data
+#     })
 
   
 # CREATE EVENT
  
-@login_required
+# @login_required
 def create_event_view(request):
     user_role = None
     if request.user.is_authenticated:
@@ -111,7 +265,10 @@ def create_event_view(request):
             event.created_by = request.user
             event.save()
             Analytics.objects.create(action="event_created",user=request.user,event=event)
+            messages.success(request, "Event created successfully!")
             return redirect('event_list')
+        else:
+            messages.error(request,"Please correct the errors below")
     else:
         form=EventForm()
     return render(request,'events/create_event.html',{'form':form,'user_role':user_role})
@@ -140,18 +297,6 @@ def delete_event_view(request,id):
     return render(request,"events/delete_event.html",{'event':event})
 
 
-# SHOWING DETAILS FOR AN EVENT 
-def event_detailed_view(request,id):
-    user_role:None
-    if request.user.is_authenticated:
-        user_role=request.user.useraccount.user_role
-    event = Event.objects.get(id=id)
-    return render(request,'events/event_detailed.html',{'event':event,'user_role':user_role})
-
-
-# CONTACT VIEW
-def contact_view(request):
-    return render(request,'events/contact.html')
 
 
 

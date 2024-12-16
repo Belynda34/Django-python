@@ -1,0 +1,49 @@
+import random
+from datetime import datetime, timedelta
+from ems1.models import Event
+from django.contrib.auth.models import User
+
+# Get the first user (ensure there is at least one user in the system)
+user = User.objects.first()
+if not user:
+    print("No user found. Please create at least one user before proceeding.")
+else:
+    print(f"Using user: {user.username}")
+
+event_names = [
+    "Tech Conference", "Music Festival", "Art Exhibition", "Business Seminar",
+    "Sports Tournament", "Charity Gala", "Science Fair", "Cultural Carnival"
+]
+locations = [
+    "Kigali Convention Center", "Nyamata Arena", "Rubavu Stadium", 
+    "Huye Cultural Grounds", "Musanze Expo Hall", "Muhanga Community Center"
+]
+
+events = []
+for _ in range(200000):
+    name = random.choice(event_names) + f"#{random.randint(1, 100)}"  # Fixed line
+    description = f"Detailed description of {name}"
+    location = random.choice(locations)
+    startDate = datetime.now().date() + timedelta(days=random.randint(1, 365))  # Future date
+    endDate = startDate + timedelta(days=random.randint(1, 7))  # Event duration 1-7 days
+    capacity = random.randint(50, 1000)
+    
+    # Create the event object
+    event = Event(
+        name=name,
+        description=description,
+        location=location,
+        startDate=startDate,
+        endDate=endDate,
+        capacity=capacity,
+        created_by=user
+    )
+    
+    events.append(event)
+
+# Bulk insert into the database
+Event.objects.bulk_create(events)
+print(f"Successfully created {len(events)} events!")
+
+
+

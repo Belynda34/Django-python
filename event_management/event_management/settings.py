@@ -41,8 +41,8 @@ INSTALLED_APPS = [
     'tailwind',
     'theme',
     'django_browser_reload',
-    'ems1',
-    'vendor'
+    'vendor',
+    'ems1'
 ]
 
 TAILWIND_APP_NAME = 'theme'
@@ -52,7 +52,7 @@ INTERNAL_IPS = [
 ]
 
 # Set the session expiration time in seconds (e.g., 1800 seconds = 30 minutes)
-SESSION_COOKIE_AGE = 60  # 1 minutes
+SESSION_COOKIE_AGE = 1200  # 1 minutes
 
 # Set session to expire when the user closes the browser
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
@@ -108,12 +108,12 @@ WSGI_APPLICATION = 'event_management.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ems',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST':'localhost',
-        'PORT':'3306',
+        'ENGINE': 'django.db.backends.postgresql',  # Change to PostgreSQL
+        'NAME': 'ems',                             # Your database name (you can create this in PostgreSQL)
+        'USER': 'postgres',             # Your PostgreSQL username
+        'PASSWORD': '12345678',     # Your PostgreSQL password
+        'HOST': 'localhost',                       # Database host (usually localhost)
+        'PORT': '5432',                            # Default PostgreSQL port
     }
 }
 
@@ -153,7 +153,7 @@ USE_TZ = False
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS =(
-    os.path.join(BASE_DIR, 'em'),
+    os.path.join(BASE_DIR, 'templates'),
 )
 
 # Default primary key field type
@@ -163,3 +163,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 LOGIN_URL = '/accounts/login/'
+
+
+# settings.py
+APPEND_SLASH = False
+

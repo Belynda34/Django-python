@@ -11,7 +11,7 @@
 </head>
 <body class="bg-gray-100">
     <h1 class="text-center py-10 text-4xl font-bold text-green-700">Create an Event</h1>
-    <form method="POST" class="w-full max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
+    <form method="POST" class="w-full max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg" action="{% url 'create_event' %}">
         {% csrf_token %}
         
         <div class="mb-6">

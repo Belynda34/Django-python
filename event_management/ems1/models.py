@@ -6,13 +6,13 @@ from django.contrib.auth.models import User
 
 class Event(models.Model):
     # name,description,location,startDate,endDate,status,capacity
-    name=models.CharField(max_length=55)
+    name=models.CharField(max_length=55,null=True)
     description=models.CharField(max_length=455)
     location=models.CharField(max_length=100)
     startDate=models.DateField()
     endDate=models.DateField()
     capacity=models.IntegerField()
-    created_by =models.ForeignKey(User, on_delete=models.CASCADE,null=False)
+    created_by =models.ForeignKey(User, on_delete=models.CASCADE,null=True)
 
 
     def __str__(self):
